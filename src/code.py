@@ -12,7 +12,6 @@ import gui
 mdns_server = mdns.Server(wifi.radio)
 mdns_server.hostname = os.getenv("SOUNDTHING_HOSTNAME", "soundthing.local")
 mdns_server.instance_name = os.getenv("SOUNDTHING_NAME", "SoundThing")
-mdns_server.advertise_service(service_type="_http", protocol="_tcp", port=5000)
 
 pool = get_radio_socketpool(wifi.radio)
 ssl_context = get_radio_ssl_context(wifi.radio)
@@ -28,8 +27,14 @@ server.headers = {
 def cors(request: Request):
     return Response(request)
 
+@server.route("/track-info", [GET], append_slash=True)
+def info(request: Request):
+    info = ui.get_track_info()
+    artist = info["artist"]
+    track = info["track"]
+    return Response(request, f"Now Playing: {artist} - {track}")
 
-@server.route("/track-info", [GET, POST], append_slash=True)
+@server.route("/track-info", [POST], append_slash=True)
 def base(request: Request):
     """
     Serve a default static plain text message.
@@ -52,9 +57,13 @@ client = adafruit_requests.Session(pool, ssl_context)
 ui = gui.GUI(width=board.DISPLAY.width, height=board.DISPLAY.height)
 
 board.DISPLAY.root_group = ui
+
 ip = str(wifi.radio.ipv4_address)
-server.start(ip)
-print(f"Listening: {ip}:5000")
+port = os.getenv("SOUNDTHING_PORT", 80)
+server.start(ip, port)
+mdns_server.advertise_service(service_type="_http", protocol="_tcp", port=int(port))
+
+print(f"Listening: {ip}:{port}")
 
 while True:
     try:
@@ -62,3 +71,4 @@ while True:
         pool_result = server.poll()
     except OSError as error:
         print(error)
+

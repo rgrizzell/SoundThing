@@ -69,6 +69,12 @@ class GUI(Group):
     def update(self):
         pass
 
+    def get_track_info(self) -> dict[str, str]:
+        return {
+            "artist": self.artist.text.replace('\n', ' '),
+            "track": self.track.text.replace('\n', ' '),
+        }
+
     def set_track_info(self, artist: str, track: str) -> None:
         self.artist.text = artist
         self.track.text = track
@@ -94,3 +100,4 @@ def load_font(font_name: str | None) -> FontProtocol:
         except ImportError:
             print(f"[ERR] Could not find font: {font_name}")
     return font
+
