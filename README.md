@@ -9,6 +9,5 @@ Currently only supports the LILYGO T-Display S3.
 Load the contents from the `src` directory to your device.
 Add wifi credentials to `settings.toml`
 
-## Client
-Configure webhooks to the following address:
-`http://soundthing.local:5000/playing`
+## Extension
+See [firefox/README.md](firefox/README.md)
