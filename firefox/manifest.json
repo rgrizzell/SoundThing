@@ -1,0 +1,13 @@
+{
+  "name": "SoundThing Tracker",
+  "version": "0.0.1",
+  "description": "A simple extension that sends SoundCloud track information to a remote HTTP server.",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["*://soundcloud.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": ["*://soundthing.local/*"]
+}
